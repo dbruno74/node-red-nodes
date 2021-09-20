@@ -21,6 +21,10 @@
         <input type="checkbox" id="node-input-luxometer" style="display:inline-block; width:auto; vertical-align:top;"> Luminosity (CC2650 only)<br/>
         <label>&nbsp;</label>
         <input type="checkbox" id="node-input-keys" style="display:inline-block; width:auto; vertical-align:top;"> Button press<br/>
+        <label>&nbsp;</label>
+        <input type="checkbox" id="node-input-button" style="display:inline-block; width:auto; vertical-align:top;"> Button press (CC1352)<br/>
+        <label>&nbsp;</label>
+        <input type="checkbox" id="node-input-battery" style="display:inline-block; width:auto; vertical-align:top;"> Battery Level<br/>
     </div>
     <div class="form-row">
         <label for="node-input-topic"><i class="fa fa-tasks"></i> Topic</label>
@@ -61,9 +65,11 @@
             accelerometer:{value:true},
             gyroscope:{value:true},
             keys:{value:true},
-            luxometer:{value:false}
+            button:{value:true},
+            luxometer:{value:false},
+	    battery:{value:true}
         },
-        inputs:0,
+        inputs:1,
         outputs:1,
         icon:"bluetooth.png",
         label:function() {
