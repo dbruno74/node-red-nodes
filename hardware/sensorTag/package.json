@@ -1,7 +1,7 @@
 {
     "name": "@dbruno74/node-red-node-sensortag",
     "description": "A Node-RED node to read data from a TI SensorTag",
-    "version": "0.0.19",
+    "version": "0.0.19-01",
     "keywords": [
         "node-red",
         "sensortag",
