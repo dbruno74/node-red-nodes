@@ -1,32 +1,59 @@
 {
+  "_from": "@dbruno74/node-red-node-sensortag",
+  "_id": "@dbruno74/node-red-node-sensortag@0.0.19-4",
+  "_inBundle": false,
+  "_integrity": "sha512-CNvotFRPyYmGt0kFNd2Uu9PQhYDlDk1F4A/nf0NjcM7uN6yho/oISgOhJLIcRX+NBJUDdylbNMwlLUGboptoKA==",
+  "_location": "/@dbruno74/node-red-node-sensortag",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@dbruno74/node-red-node-sensortag",
     "name": "@dbruno74/node-red-node-sensortag",
-    "description": "A Node-RED node to read data from a TI SensorTag",
-    "version": "0.0.19-3",
-    "keywords": [
-        "node-red",
-        "sensortag",
-        "TI CC2650",
-        "TI CC2541",
-	"TI CC1352"
-    ],
-    "dependencies": {
-        "@dbruno74/sensortag": "~1.0.1"
-    },
-    "scripts" : {
-        "postinstall" : "node scripts/checkplatform.js pibt.sh"
-    },
-    "license": "Apache-2.0",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/dbruno74/node-red-nodes/tree/master/hardware/sensorTag"
-    },
-    "node-red": {
-        "nodes": {
-            "sensorTag": "79-sensorTag.js"
-        }
-    },
-    "author": {
-        "name": "Diego Bruno",
-        "email": "diego.bruno0101@gmail.com"
+    "escapedName": "@dbruno74%2fnode-red-node-sensortag",
+    "scope": "@dbruno74",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@dbruno74/node-red-node-sensortag/-/node-red-node-sensortag-0.0.19-4.tgz",
+  "_shasum": "1060b2da641864feeadf9f955e64b0c9cbcc5e60",
+  "_spec": "@dbruno74/node-red-node-sensortag",
+  "_where": "/root/nodered.snap/parts/node-red/build",
+  "author": {
+    "name": "Diego Bruno",
+    "email": "diego.bruno0101@gmail.com"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@dbruno74/sensortag": "~1.0.1"
+  },
+  "deprecated": false,
+  "description": "A Node-RED node to read data from a TI SensorTag",
+  "keywords": [
+    "node-red",
+    "sensortag",
+    "TI CC2650",
+    "TI CC2541",
+    "TI CC1352"
+  ],
+  "license": "Apache-2.0",
+  "name": "@dbruno74/node-red-node-sensortag",
+  "node-red": {
+    "nodes": {
+      "sensorTag": "79-sensorTag.js"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dbruno74/node-red-nodes/tree/master/hardware/sensorTag"
+  },
+  "scripts": {
+    "postinstall": "node scripts/checkplatform.js pibt.sh"
+  },
+  "version": "0.0.19-4"
 }

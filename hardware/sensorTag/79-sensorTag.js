@@ -27,6 +27,10 @@ module.exports = function(RED) {
                 if (!node.discovering) {
                     node.status({fill:"blue", shape:"dot", text:"discovering..."});
                     node.discovering = true;
+                    var msg = {'topic': node.topic + '/connection'};
+                    msg.payload = {'status': 'discovering'};
+                    node.send(msg);
+
                     SensorTag.discover(function(sensorTag) {
                         node.status({fill:"blue", shape:"dot", text:"connecting"});
                         node.stag = sensorTag;
@@ -34,16 +38,29 @@ module.exports = function(RED) {
 			node.warn("found sensor tag: " + sensorTag._peripheral.uuid);
 			node.warn("sensortag type: " + node.stag.type);
                         node.topic = node.topic || sensorTag._peripheral.uuid;
+                        var msg = {'topic': node.topic + '/connection'};
+                        msg.payload = {'status': 'connecting', 'device': sensorTag._peripheral.uuid};
+                        node.send(msg);
+
                         sensorTag.connect(function() {
                             node.log("connected to sensor tag: " + sensorTag._peripheral.uuid);
                             node.warn("connected to sensor tag: " + sensorTag._peripheral.uuid);
                             node.status({fill:"green", shape:"dot", text:"connected"});
+                            var msg = {'topic': node.topic + '/connection'};
+                            msg.payload = {'status': 'connected', 'device': sensorTag._peripheral.uuid};
+                            node.send(msg);
 
                             sensorTag.once('disconnect', function() {
+			        if (node.stag.type === "cc1352") {
+                                    sensorTag.enableAccelerometer(function() {});
+				}	
                                 node.discovering = false;
                                 node.status({fill:"red", shape:"ring", text:"disconnected"});
                                 node.log("disconnected ",node.uuid);
                                 node.warn("disconnected ",node.uuid);
+                                var msg = {'topic': node.topic + '/connection'};
+                                msg.payload = {'status': 'disconnected', 'device': sensorTag._peripheral.uuid};
+                                node.send(msg);
                             });
 
                             sensorTag.discoverServicesAndCharacteristics(function() {
@@ -146,7 +163,7 @@ module.exports = function(RED) {
                         });
                     },node.uuid);
                 }
-            },15000);
+            },1000);
         }
         else {
             console.log("reconfig",node.uuid);
@@ -162,6 +179,12 @@ module.exports = function(RED) {
 	    if (msg.topic === "writeLed") {
               node.stag.writeLed(msg.payload.ledNum, msg.payload.val);
 	    }		
+	});
+
+	this.on("input", function(msg) {
+	    if (msg.topic === "reconnect") {
+		node.stag.disconnect(function() {});
+	    }; 
 	});
     }
 
