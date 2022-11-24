@@ -55,5 +55,5 @@
   "scripts": {
     "postinstall": "node scripts/checkplatform.js pibt.sh"
   },
-  "version": "0.0.19-4"
+  "version": "0.0.19-5"
 }

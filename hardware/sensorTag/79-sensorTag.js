@@ -21,12 +21,13 @@ module.exports = function(RED) {
         if (this.uuid === "") { this.uuid = undefined; }
         var node = this;
         node.discovering = false;
+	node.configured = false;
 
         if (typeof node.stag === "undefined") {
             node.loop = setInterval(function() {
                 if (!node.discovering) {
-                    node.status({fill:"blue", shape:"dot", text:"discovering..."});
                     node.discovering = true;
+                    node.status({fill:"blue", shape:"dot", text:"discovering..."});
                     var msg = {'topic': node.topic + '/connection'};
                     msg.payload = {'status': 'discovering'};
                     node.send(msg);
@@ -54,16 +55,21 @@ module.exports = function(RED) {
 			        if (node.stag.type === "cc1352") {
                                     sensorTag.enableAccelerometer(function() {});
 				}	
-                                node.discovering = false;
                                 node.status({fill:"red", shape:"ring", text:"disconnected"});
                                 node.log("disconnected ",node.uuid);
                                 node.warn("disconnected ",node.uuid);
                                 var msg = {'topic': node.topic + '/connection'};
                                 msg.payload = {'status': 'disconnected', 'device': sensorTag._peripheral.uuid};
                                 node.send(msg);
+                                node.discovering = false;
+				node.configured = false;
                             });
 
                             sensorTag.discoverServicesAndCharacteristics(function() {
+			     if (!node.configured) {
+				node.configured = true;
+				node.warn("Discovering and configuring services ...");
+
                                 sensorTag.enableIrTemperature(function() {});
                                 sensorTag.on('irTemperatureChange',
                                 function(objectTemperature, ambientTemperature) {
@@ -159,11 +165,13 @@ module.exports = function(RED) {
                                     node.send(msg);
                                 });
                                 enable(node);
+				node.warn("Services configured!");
+                              } else node.stag.disconnect(function() {});
                             });
                         });
                     },node.uuid);
-                }
-            },1000);
+		}
+	    },1000);
         }
         else {
             console.log("reconfig",node.uuid);
