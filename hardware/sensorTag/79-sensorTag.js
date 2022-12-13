@@ -3,11 +3,19 @@ module.exports = function(RED) {
     "use strict";
     var SensorTag = require("@dbruno74/sensortag");
 
+    function discover(address, callback) {
+	if ((address === "") || (address == null)) {
+		SensorTag.discover(callback);
+        } else {
+		SensorTag.discoverByAddress(address, callback);
+        }
+    }
+
     function SensorTagNode(n) {
         RED.nodes.createNode(this,n);
         this.name = n.name;
         this.topic = n.topic;
-        this.uuid = n.uuid;
+        this.address = n.address;
         this.temperature = n.temperature;
         this.pressure = n.pressure;
         this.humidity = n.humidity;
@@ -18,7 +26,6 @@ module.exports = function(RED) {
         this.keys = n.keys;
 	this.button = n.button;
 	this.battery = n.battery;
-        if (this.uuid === "") { this.uuid = undefined; }
         var node = this;
         node.discovering = false;
 	node.configured = false;
@@ -32,23 +39,23 @@ module.exports = function(RED) {
                     msg.payload = {'status': 'discovering'};
                     node.send(msg);
 
-                    SensorTag.discover(function(sensorTag) {
+                    discover(node.address,function(sensorTag) {
                         node.status({fill:"blue", shape:"dot", text:"connecting"});
                         node.stag = sensorTag;
-                        node.log("found sensor tag: " + sensorTag._peripheral.uuid);
-			node.warn("found sensor tag: " + sensorTag._peripheral.uuid);
+                        node.log("found sensor tag: " + sensorTag._peripheral.address);
+			node.warn("found sensor tag: " + sensorTag._peripheral.address);
 			node.warn("sensortag type: " + node.stag.type);
-                        node.topic = node.topic || sensorTag._peripheral.uuid;
+                        node.topic = node.topic || sensorTag._peripheral.address;
                         var msg = {'topic': node.topic + '/connection'};
-                        msg.payload = {'status': 'connecting', 'device': sensorTag._peripheral.uuid};
+                        msg.payload = {'status': 'connecting', 'device': sensorTag._peripheral.address};
                         node.send(msg);
 
                         sensorTag.connect(function() {
-                            node.log("connected to sensor tag: " + sensorTag._peripheral.uuid);
-                            node.warn("connected to sensor tag: " + sensorTag._peripheral.uuid);
+                            node.log("connected to sensor tag: " + sensorTag._peripheral.address);
+                            node.warn("connected to sensor tag: " + sensorTag._peripheral.address);
                             node.status({fill:"green", shape:"dot", text:"connected"});
                             var msg = {'topic': node.topic + '/connection'};
-                            msg.payload = {'status': 'connected', 'device': sensorTag._peripheral.uuid};
+                            msg.payload = {'status': 'connected', 'device': sensorTag._peripheral.address};
                             node.send(msg);
 
                             sensorTag.once('disconnect', function() {
@@ -56,10 +63,10 @@ module.exports = function(RED) {
                                     sensorTag.enableAccelerometer(function() {});
 				}	
                                 node.status({fill:"red", shape:"ring", text:"disconnected"});
-                                node.log("disconnected ",node.uuid);
-                                node.warn("disconnected ",node.uuid);
+                                node.log("disconnected ",node.address);
+                                node.warn("disconnected ",node.address);
                                 var msg = {'topic': node.topic + '/connection'};
-                                msg.payload = {'status': 'disconnected', 'device': sensorTag._peripheral.uuid};
+                                msg.payload = {'status': 'disconnected', 'device': sensorTag._peripheral.address};
                                 node.send(msg);
                                 node.discovering = false;
 				node.configured = false;
@@ -169,12 +176,12 @@ module.exports = function(RED) {
                               } else node.stag.disconnect(function() {});
                             });
                         });
-                    },node.uuid);
+                    },node.address);
 		}
 	    },1000);
         }
         else {
-            console.log("reconfig",node.uuid);
+            console.log("reconfig",node.address);
             enable(node);
         }
 
